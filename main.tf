@@ -57,7 +57,7 @@ module "blog_alb" {
   load_balancer_type = "application"
 
   # Security Group
-  security_groups = module.blog_sg.security_group_id
+  security_groups = [module.blog_sg.security_group_id]
 
   target_groups = [
     {
