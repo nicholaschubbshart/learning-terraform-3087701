@@ -53,29 +53,27 @@ module "alb" {
   vpc_id  = module.blog_vpc.vpc_id
   subnets = module.blog_vpc.public_subnets
 
+  load_balancer_type = "application"
+
   # Security Group
   security_groups = module.blog_sg.security_group_id
 
-  http_tcp_listeners = [
+  target_groups = [
     {
-      port = 80
-      protocol = "HTTP"
-      target_group_index = 0
+      name_prefix      = "blog-"
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type      = "instance"
     }
   ]
 
-  target_groups = {
-    ex-instance = {
-      name_prefix      = "blog"
-      protocol         = "HTTP"
-      port             = 80
-      target_type      = "instance"
-      my_target = {
-        target_id = aws_instance.blog.id
-        port = 80
-      }
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
     }
-  }
+  ]
 
   tags = {
     Environment = "dev"
